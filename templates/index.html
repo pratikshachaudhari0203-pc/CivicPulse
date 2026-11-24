@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CivicPulse | Your Voice. Our Action.</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="nav-container">
+
+            <a href="/" class="logo">
+                <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                     alt="CivicPulse Logo">
+            </a>
+
+            <nav class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <div class="nav-buttons">
+                <a href="/login" class="btn btn-login">Login</a>
+                <a href="/register" class="btn btn-register">Register</a>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- ================= HERO ================= -->
+    <main>
+
+        <section class="hero" id="home">
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+                    🏛️ Building Better Communities Together
+                </div>
+
+                <h1>
+                    Your Voice.<br>
+                    Our Action.<br>
+                    Better <span>Tomorrow.</span>
+                </h1>
+
+                <p>
+                    Report issues in your city, track progress,
+                    and help us build better communities together.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="/login" class="hero-btn primary-btn">
+                        ➤ &nbsp; Report an Issue
+                    </a>
+
+                    <a href="#how-it-works" class="hero-btn secondary-btn">
+                        ▷ &nbsp; Learn How It Works
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="hero-visual">
+                <div class="city-placeholder">
+                    <div class="city-sky"></div>
+
+                    <div class="phone">
+                        <div class="phone-screen">
+
+                            <div class="phone-logo">
+                                <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                                     alt="CivicPulse">
+                            </div>
+
+                            <h3>Report. Track. Resolve.</h3>
+                            <p>Together for a better city.</p>
+
+                            <div class="phone-grid">
+                                <div>
+                                    <span>📋</span>
+                                    <strong>Report</strong>
+                                    <small>Raise an issue</small>
+                                </div>
+
+                                <div>
+                                    <span>🔍</span>
+                                    <strong>Track</strong>
+                                    <small>Track progress</small>
+                                </div>
+
+                                <div>
+                                    <span>🛡️</span>
+                                    <strong>Resolve</strong>
+                                    <small>Get it resolved</small>
+                                </div>
+
+                                <div>
+                                    <span>👥</span>
+                                    <strong>Participate</strong>
+                                    <small>Be the change</small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="person person-left">👩🏻</div>
+                    <div class="person person-right">👨🏻</div>
+
+                    <div class="tree tree-one">🌳</div>
+                    <div class="tree tree-two">🌳</div>
+
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= FEATURES ================= -->
+        <section class="features" id="features">
+
+            <div class="section-title">
+                <h2>Why <span>CivicPulse?</span></h2>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <div>
+                        <h3>Easy Reporting</h3>
+                        <p>Report any issue in just a few steps.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <div>
+                        <h3>Track Progress</h3>
+                        <p>Stay updated on the status of your complaints.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <div>
+                        <h3>Better Community</h3>
+                        <p>Together we can build a cleaner, safer city.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <div>
+                        <h3>Transparent System</h3>
+                        <p>Open and transparent process for everyone.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= STATISTICS ================= -->
+        <section class="statistics">
+
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div>
+                    <h3>12,458+</h3>
+                    <p>Complaints Reported</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <div>
+                    <h3>8,972+</h3>
+                    <p>Issues Resolved</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">⌛</div>
+                <div>
+                    <h3>2,351+</h3>
+                    <p>In Progress</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon blue">👥</div>
+                <div>
+                    <h3>25,000+</h3>
+                    <p>Active Citizens</p>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= ABOUT ================= -->
+        <section class="simple-section" id="about">
+
+            <div class="section-title">
+                <h2>About <span>CivicPulse</span></h2>
+            </div>
+
+            <p>
+                CivicPulse is a civic complaint management platform that
+                connects citizens with officers to report, track and
+                resolve local civic issues.
+            </p>
+
+        </section>
+
+
+        <!-- ================= HOW IT WORKS ================= -->
+        <section class="simple-section" id="how-it-works">
+
+            <div class="section-title">
+                <h2>How It <span>Works</span></h2>
+            </div>
+
+            <div class="steps">
+
+                <div class="step">
+                    <span>1</span>
+                    <h3>Report</h3>
+                    <p>Submit a civic issue with its location and details.</p>
+                </div>
+
+                <div class="step">
+                    <span>2</span>
+                    <h3>Track</h3>
+                    <p>Track the progress of your complaint.</p>
+                </div>
+
+                <div class="step">
+                    <span>3</span>
+                    <h3>Resolve</h3>
+                    <p>Officers review and resolve the issue.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= CONTACT ================= -->
+        <section class="simple-section contact-section" id="contact">
+
+            <div class="section-title">
+                <h2>Build a Better <span>Community</span></h2>
+            </div>
+
+            <p>
+                Your voice can help make your city better.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+                <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                     alt="CivicPulse Logo">
+                <p>© 2026 CivicPulse. All rights reserved.</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <span>|</span>
+                <a href="#">Terms of Service</a>
+                <span>|</span>
+                <a href="#contact">Contact Us</a>
+            </div>
+
+            <div class="social">
+                <span>Follow Us</span>
+                <a href="#">f</a>
+                <a href="#">𝕏</a>
+                <a href="#">◎</a>
+                <a href="#">in</a>
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>

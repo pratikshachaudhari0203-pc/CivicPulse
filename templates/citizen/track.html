@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Track Complaint - CivicPulse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/citizen.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/track.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="citizen-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+
+            <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                 alt="CivicPulse">
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('citizen_dashboard') }}"
+               class="sidebar-link">
+
+                <span>⌂</span>
+                Dashboard
+
+            </a>
+
+
+            <a href="{{ url_for('report_issue') }}"
+               class="sidebar-link">
+
+                <span>＋</span>
+                Report an Issue
+
+            </a>
+
+
+            <a href="{{ url_for('my_complaints') }}"
+               class="sidebar-link active">
+
+                <span>▤</span>
+                My Complaints
+
+            </a>
+
+
+            <a href="/citizen/profile"
+               class="sidebar-link">
+
+                <span>◯</span>
+                Profile
+
+            </a>
+
+
+            <a href="{{ url_for('citizen_help') }}"
+               class="sidebar-link">
+
+                <span>?</span>
+                Help & Support
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="sidebar-link logout-link">
+
+                <span>↪</span>
+                Logout
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="citizen-main">
+
+        <!-- Page Header -->
+
+        <div class="page-header">
+
+            <div>
+
+                <p class="page-label">
+                    CITIZEN PORTAL
+                </p>
+
+                <h1>
+                    Track Complaint
+                </h1>
+
+                <p class="page-description">
+                    View the current status of your reported issue.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= COMPLAINT DETAILS ================= -->
+
+        <div class="track-card">
+
+            <div class="track-header">
+
+                <div>
+
+                    <span class="complaint-id">
+                        Complaint #{{ complaint.ComplaintID }}
+                    </span>
+
+                    <h2>
+                        {{ complaint.CategoryName }}
+                    </h2>
+
+                </div>
+
+
+                <span class="status {{ complaint.Status|lower|replace(' ', '-') }}">
+
+                    {{ complaint.Status }}
+
+                </span>
+
+            </div>
+
+
+            <!-- Complaint Information -->
+
+            <div class="track-info">
+
+                <div>
+
+                    <span>Location</span>
+
+                    <strong>
+                        📍 {{ complaint.Location }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Priority</span>
+
+                    <strong>
+                        {{ complaint.Priority }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Reported On</span>
+
+                    <strong>
+                        {{ complaint.CreatedAt.strftime('%d %b %Y') }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="track-description">
+
+                <span>Description</span>
+
+                <p>
+                    {{ complaint.Description }}
+                </p>
+
+            </div>
+
+
+            <!-- ================= STATUS TIMELINE ================= -->
+
+            <div class="status-section">
+
+                <h3>
+                    Complaint Progress
+                </h3>
+
+
+                <div class="status-timeline">
+
+                    <!-- Submitted -->
+
+                    <div class="timeline-item completed">
+
+                        <div class="timeline-dot">
+                            ✓
+                        </div>
+
+                        <div class="timeline-content">
+
+                            <strong>
+                                Complaint Submitted
+                            </strong>
+
+                            <p>
+                                Your complaint has been received.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- In Progress -->
+
+                    <div class="timeline-item
+                        {% if complaint.Status == 'In Progress' or complaint.Status == 'Resolved' %}
+                            completed
+                        {% elif complaint.Status == 'Pending' %}
+                            current
+                        {% endif %}">
+
+                        <div class="timeline-dot">
+
+                            {% if complaint.Status == 'In Progress' or complaint.Status == 'Resolved' %}
+                                ✓
+                            {% else %}
+                                2
+                            {% endif %}
+
+                        </div>
+
+                        <div class="timeline-content">
+
+                            <strong>
+                                In Progress
+                            </strong>
+
+                            <p>
+                                Your complaint is being reviewed and handled.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Resolved -->
+
+                    <div class="timeline-item
+                        {% if complaint.Status == 'Resolved' %}
+                            completed
+                        {% endif %}">
+
+                        <div class="timeline-dot">
+
+                            {% if complaint.Status == 'Resolved' %}
+                                ✓
+                            {% else %}
+                                3
+                            {% endif %}
+
+                        </div>
+
+                        <div class="timeline-content">
+
+                            <strong>
+                                Resolved
+                            </strong>
+
+                            <p>
+                                The reported issue has been resolved.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Back Button -->
+
+            <a href="{{ url_for('my_complaints') }}"
+               class="back-btn">
+
+                ← Back to My Complaints
+
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

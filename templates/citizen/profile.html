@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile - CivicPulse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/citizen.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/profile.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="citizen-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+
+            <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                 alt="CivicPulse">
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('citizen_dashboard') }}"
+               class="sidebar-link">
+
+                <span>⌂</span>
+                Dashboard
+
+            </a>
+
+
+            <a href="{{ url_for('report_issue') }}"
+               class="sidebar-link">
+
+                <span>＋</span>
+                Report an Issue
+
+            </a>
+
+
+            <a href="{{ url_for('my_complaints') }}"
+               class="sidebar-link">
+
+                <span>▤</span>
+                My Complaints
+
+            </a>
+
+
+            <a href="{{ url_for('citizen_profile') }}"
+               class="sidebar-link active">
+
+                <span>◯</span>
+                Profile
+
+            </a>
+
+
+            <a href="{{ url_for('citizen_help') }}"
+               class="sidebar-link">
+
+                <span>?</span>
+                Help & Support
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="sidebar-link logout-link">
+
+                <span>↪</span>
+                Logout
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="citizen-main">
+
+        <!-- Page Header -->
+
+        <div class="page-header">
+
+            <div>
+
+                <p class="page-label">
+                    CITIZEN PORTAL
+                </p>
+
+                <h1>
+                    My Profile
+                </h1>
+
+                <p class="page-description">
+                    View your account information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= PROFILE CARD ================= -->
+
+        <div class="profile-card">
+
+            <!-- Profile Header -->
+
+            <div class="profile-header">
+
+                <div class="profile-avatar">
+
+                    {{ user.FullName[0]|upper }}
+
+                </div>
+
+
+                <div>
+
+                    <h2>
+                        {{ user.FullName }}
+                    </h2>
+
+                    <p>
+                        Citizen
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Profile Information -->
+
+            <div class="profile-info">
+
+                <div class="profile-item">
+
+                    <span>
+                        Full Name
+                    </span>
+
+                    <strong>
+                        {{ user.FullName }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Email
+                    </span>
+
+                    <strong>
+                        {{ user.Email }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Phone
+                    </span>
+
+                    <strong>
+                        {{ user.Phone }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        City
+                    </span>
+
+                    <strong>
+                        {{ user.City }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Account Type
+                    </span>
+
+                    <strong>
+                        {{ user.Role }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Member Since
+                    </span>
+
+                    <strong>
+                        {{ user.CreatedAt.strftime('%d %b %Y') }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

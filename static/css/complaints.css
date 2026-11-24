@@ -1,0 +1,476 @@
+/* ================= MY COMPLAINTS PAGE ================= */
+
+.complaint-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+
+/* ================= SEARCH ================= */
+
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 15px 12px 42px;
+    border: 1px solid #dbe5ea;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #19334f;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #079fc1;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718092;
+    font-size: 20px;
+}
+
+
+/* ================= FILTERS ================= */
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-group select {
+    padding: 11px 35px 11px 13px;
+    border: 1px solid #dbe5ea;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #526477;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #079fc1;
+}
+
+
+/* ================= COMPLAINT CARD ================= */
+
+.complaints-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.complaint-card {
+    background: #ffffff;
+    border: 1px solid #e3ebf0;
+    border-radius: 14px;
+    padding: 22px 25px;
+    box-shadow: 0 4px 14px rgba(20, 65, 100, 0.04);
+    transition: 0.2s;
+}
+
+.complaint-card:hover {
+    box-shadow: 0 6px 18px rgba(20, 65, 100, 0.08);
+    transform: translateY(-1px);
+}
+
+
+/* ================= CARD HEADER ================= */
+
+.complaint-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.complaint-id {
+    color: #079fc1;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.complaint-card-header h3 {
+    color: #19334f;
+    font-size: 18px;
+    margin: 5px 0 0 0;
+}
+
+
+/* ================= DESCRIPTION ================= */
+
+.complaint-description {
+    color: #627386;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 15px 0 20px 0;
+}
+
+
+/* ================= INFORMATION ================= */
+
+.complaint-info {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    padding: 17px 0;
+    border-top: 1px solid #edf2f5;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.complaint-info > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label {
+    color: #8a98a6;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.complaint-info strong {
+    color: #40546a;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* ================= CARD FOOTER ================= */
+
+.complaint-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+}
+
+.complaint-card-footer > span {
+    color: #8a98a6;
+    font-size: 12px;
+}
+
+.complaint-card-footer strong {
+    color: #526477;
+}
+
+.view-details-btn {
+    border: none;
+    background: transparent;
+    color: #079fc1;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.view-details-btn:hover {
+    text-decoration: underline;
+}
+
+
+/* ================= EMPTY STATE ================= */
+
+.empty-complaints {
+    background: #ffffff;
+    border: 1px solid #e3ebf0;
+    border-radius: 14px;
+    padding: 70px 30px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(20, 65, 100, 0.04);
+}
+
+.empty-complaints-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.empty-complaints h2 {
+    color: #19334f;
+    font-size: 21px;
+    margin-bottom: 8px;
+}
+
+.empty-complaints p {
+    color: #718092;
+    font-size: 14px;
+    margin-bottom: 22px;
+}
+
+.report-now-btn {
+    display: inline-block;
+    padding: 11px 20px;
+    border-radius: 8px;
+    background: #079fc1;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.report-now-btn:hover {
+    background: #087fa0;
+}
+
+
+/* ================= NO SEARCH RESULTS ================= */
+
+.no-results {
+    background: #ffffff;
+    border: 1px solid #e3ebf0;
+    border-radius: 14px;
+    padding: 50px 30px;
+    text-align: center;
+}
+
+.no-results-icon {
+    font-size: 35px;
+    margin-bottom: 12px;
+}
+
+.no-results h3 {
+    color: #19334f;
+    margin-bottom: 7px;
+}
+
+.no-results p {
+    color: #718092;
+    font-size: 13px;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+
+    .complaint-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        max-width: none;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .filter-group select {
+        flex: 1;
+    }
+
+    .complaint-info {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .complaint-card {
+        padding: 18px;
+    }
+
+    .complaint-card-header {
+        flex-direction: column;
+    }
+
+    .complaint-info {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .complaint-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+/* ================= COMPLAINT DETAILS MODAL ================= */
+
+.complaint-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(20, 45, 65, 0.45);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+
+/* Modal Box */
+
+.complaint-modal-content {
+    position: relative;
+
+    width: 90%;
+    max-width: 550px;
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    padding: 30px;
+
+    box-shadow: 0 12px 35px rgba(20, 65, 100, 0.18);
+}
+
+
+/* Close Button */
+
+.modal-close {
+    position: absolute;
+
+    top: 15px;
+    right: 18px;
+
+    border: none;
+    background: transparent;
+
+    font-size: 28px;
+    color: #718092;
+
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: #19334f;
+}
+
+
+/* Modal Heading */
+
+.modal-label {
+    color: #079fc1;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 7px;
+}
+
+.complaint-modal-content h2 {
+    color: #19334f;
+
+    font-size: 22px;
+
+    margin: 0 0 5px 0;
+}
+
+
+/* Complaint ID */
+
+.modal-id {
+    color: #8a98a6;
+
+    font-size: 12px;
+
+    margin-bottom: 25px;
+}
+
+
+/* Details */
+
+.modal-details {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr 1fr;
+
+    gap: 15px;
+
+    padding: 18px 0;
+
+    border-top: 1px solid #edf2f5;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.modal-details div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.modal-details span,
+.modal-description > span {
+    color: #8a98a6;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.modal-details strong {
+    color: #40546a;
+
+    font-size: 13px;
+
+    font-weight: 500;
+}
+
+
+/* Description */
+
+.modal-description {
+    padding-top: 20px;
+}
+
+.modal-description p {
+    color: #627386;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    margin-top: 8px;
+}
+
+
+/* Responsive */
+
+@media (max-width: 600px) {
+
+    .complaint-modal-content {
+        padding: 24px;
+    }
+
+    .modal-details {
+        grid-template-columns: 1fr;
+    }
+
+}

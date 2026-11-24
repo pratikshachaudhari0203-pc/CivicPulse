@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Complaints - CivicPulse</title>
+
+    <!-- Common CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Citizen CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/citizen.css') }}">
+
+    <!-- Complaints CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/complaints.css') }}">
+    
+    <style>
+        /* Complaint action buttons */
+        .complaint-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .complaint-actions form {
+            margin: 0;
+        }
+
+        .complaint-actions .action-btn {
+            display: inline-block;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s ease;
+        }
+
+        .view-details-btn {
+            background: #eef2ff;
+            color: #3730a3;
+        }
+
+        .edit-btn {
+            background: #eaf2ff;
+            color: #31578c;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .reopen-btn {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .complaint-actions .action-btn:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .complaint-card-footer {
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 600px) {
+            .complaint-actions {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="citizen-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                 alt="CivicPulse">
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('citizen_dashboard') }}"
+               class="sidebar-link">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('report_issue') }}"
+               class="sidebar-link">
+                <span>＋</span>
+                Report an Issue
+            </a>
+
+            <a href="/citizen/complaints"
+               class="sidebar-link active">
+                <span>▤</span>
+                My Complaints
+            </a>
+
+            <a href="/citizen/profile"
+               class="sidebar-link">
+                <span>◯</span>
+                Profile
+            </a>
+
+            <a href="{{ url_for('citizen_help') }}"
+               class="sidebar-link">
+                <span>?</span>
+                Help & Support
+            </a>
+
+            <a href="{{ url_for('logout') }}"
+               class="sidebar-link logout-link">
+                <span>↪</span>
+                Logout
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="citizen-main">
+
+        <!-- Page Header -->
+
+        <div class="page-header">
+
+            <div>
+                <p class="page-label">CITIZEN PORTAL</p>
+
+                <h1>My Complaints</h1>
+
+                <p class="page-description">
+                    View and track all the civic issues you have reported.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- ================= SEARCH & FILTER ================= -->
+
+        <div class="complaint-controls">
+
+            <div class="search-box">
+
+                <span class="search-icon">⌕</span>
+
+                <input
+                    type="text"
+                    id="complaintSearch"
+                    placeholder="Search complaints...">
+
+            </div>
+
+
+            <div class="filter-group">
+
+                <select id="statusFilter">
+
+                    <option value="all">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+
+                </select>
+
+
+                <select id="priorityFilter">
+
+                    <option value="all">All Priority</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= COMPLAINTS ================= -->
+
+        <div class="complaints-container">
+
+            {% if complaints %}
+
+                {% for complaint in complaints %}
+
+                <div class="complaint-card"
+
+                     data-search="{{ complaint.ComplaintID }} {{ complaint.CategoryName }} {{ complaint.Description }} {{ complaint.Location }}"
+
+                     data-status="{{ complaint.Status }}"
+                     data-priority="{{ complaint.Priority }}">
+
+
+                    <!-- Card Header -->
+
+                    <div class="complaint-card-header">
+
+                        <div>
+
+                            <span class="complaint-id">
+                                #{{ complaint.ComplaintID }}
+                            </span>
+
+                            <h3>
+                                {{ complaint.CategoryName }}
+                            </h3>
+
+                        </div>
+
+
+                        <span class="status {{ complaint.Status|lower|replace(' ', '-') }}">
+                            {{ complaint.Status }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Description -->
+
+                    <p class="complaint-description">
+                        {{ complaint.Description }}
+                    </p>
+
+
+                    <!-- Complaint Information -->
+
+                    <div class="complaint-info">
+
+                        <div>
+
+                            <span class="info-label">
+                                Location
+                            </span>
+
+                            <strong>
+                                📍 {{ complaint.Location }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="info-label">
+                                Priority
+                            </span>
+
+                            <span class="priority {{ complaint.Priority|lower }}">
+                                {{ complaint.Priority }}
+                            </span>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="info-label">
+                                Reported On
+                            </span>
+
+                            <strong>
+                                {{ complaint.CreatedAt.strftime('%d %b %Y') if complaint.CreatedAt else '—' }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= CARD FOOTER ================= -->
+
+                    <div class="complaint-card-footer">
+
+                        <span>
+                            Complaint ID:
+                            <strong>#{{ complaint.ComplaintID }}</strong>
+                        </span>
+
+
+                        <!-- ACTION BUTTONS -->
+
+                        <div class="complaint-actions">
+
+
+                            <!-- View Details: All statuses -->
+
+                            <a
+                                href="{{ url_for('track_complaint', complaint_id=complaint.ComplaintID) }}"
+                                class="action-btn view-details-btn">
+
+                                View Details →
+
+                            </a>
+
+
+                            <!-- Edit and Delete: Pending only -->
+
+                            {% if complaint.Status == "Pending" %}
+
+
+                                <!-- Edit Complaint -->
+
+                                <a
+                                    href="{{ url_for('edit_complaint', complaint_id=complaint.ComplaintID) }}"
+                                    class="action-btn edit-btn">
+
+                                    Edit Complaint
+
+                                </a>
+
+
+                                <!-- Delete Complaint -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_citizen_complaint', complaint_id=complaint.ComplaintID) }}"
+                                    onsubmit="return confirm('Are you sure you want to permanently delete complaint #{{ complaint.ComplaintID }}? This action cannot be undone.');">
+
+                                    <button
+                                        type="submit"
+                                        class="action-btn delete-btn">
+
+                                        Delete Complaint
+
+                                    </button>
+
+                                </form>
+
+
+                            {% endif %}
+
+
+                            <!-- Reopen: Resolved only -->
+
+                            {% if complaint.Status == "Resolved" %}
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('reopen_citizen_complaint', complaint_id=complaint.ComplaintID) }}"
+                                    onsubmit="return confirm('Do you want to reopen complaint #{{ complaint.ComplaintID }}? Its status will change to Pending.');">
+
+                                    <button
+                                        type="submit"
+                                        class="action-btn reopen-btn">
+
+                                        ↻ Reopen Complaint
+
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+
+                <!-- No Search Results -->
+
+                <div id="noResults"
+                     class="no-results"
+                     style="display: none;">
+
+                    <div class="no-results-icon">
+                        🔍
+                    </div>
+
+                    <h3>No complaints found</h3>
+
+                    <p>
+                        Try changing your search or filters.
+                    </p>
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- No Complaints At All -->
+
+                <div class="empty-complaints">
+
+                    <div class="empty-complaints-icon">
+                        📋
+                    </div>
+
+                    <h2>No Complaints Yet</h2>
+
+                    <p>
+                        You haven't reported any civic issues yet.
+                    </p>
+
+                    <a href="{{ url_for('report_issue') }}"
+                       class="report-now-btn">
+
+                        Report an Issue
+
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- JavaScript -->
+
+<script src="{{ url_for('static', filename='js/complaints.js') }}"></script>
+
+</body>
+</html>

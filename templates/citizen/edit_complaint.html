@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Complaint - CivicPulse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/citizen.css') }}">
+
+    <style>
+        .edit-complaint-card {
+            max-width: 850px;
+            margin: 25px auto;
+            padding: 30px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(15, 35, 70, 0.04);
+        }
+
+        .edit-complaint-card h2 {
+            margin-top: 0;
+            color: #102344;
+        }
+
+        .edit-intro {
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .edit-complaint-card .form-group {
+            margin-bottom: 22px;
+        }
+
+        .edit-complaint-card label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #243b5a;
+        }
+
+        .edit-complaint-card label span {
+            color: #dc3545;
+        }
+
+        .edit-complaint-card input[type="text"],
+        .edit-complaint-card select,
+        .edit-complaint-card textarea,
+        .edit-complaint-card input[type="file"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid #d5deeb;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #102344;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .edit-complaint-card textarea {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        .edit-complaint-card input:focus,
+        .edit-complaint-card select:focus,
+        .edit-complaint-card textarea:focus {
+            outline: none;
+            border-color: #426da9;
+            box-shadow: 0 0 0 3px rgba(66, 109, 169, 0.12);
+        }
+
+        .current-image {
+            margin: 12px 0;
+        }
+
+        .current-image img {
+            display: block;
+            max-width: 260px;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-help {
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .edit-notice {
+            padding: 13px 15px;
+            margin-bottom: 22px;
+            border-radius: 9px;
+            background: #eff6ff;
+            color: #31578c;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .edit-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .edit-form-actions a,
+        .edit-form-actions button {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .cancel-edit-btn {
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        .save-edit-btn {
+            background: #426da9;
+            color: #ffffff;
+            border: 1px solid #426da9;
+        }
+
+        .save-edit-btn:hover {
+            background: #31578c;
+        }
+
+        .cancel-edit-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .edit-flash {
+            max-width: 850px;
+            margin: 20px auto 0;
+            padding: 13px 16px;
+            border-radius: 8px;
+        }
+
+        .edit-flash.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .edit-flash.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 600px) {
+            .edit-complaint-card {
+                padding: 20px;
+                margin: 15px auto;
+            }
+
+            .edit-form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .edit-form-actions a,
+            .edit-form-actions button {
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="citizen-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img
+                src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                alt="CivicPulse">
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('citizen_dashboard') }}"
+               class="sidebar-link">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('report_issue') }}"
+               class="sidebar-link">
+                <span>＋</span>
+                Report an Issue
+            </a>
+
+            <a href="{{ url_for('my_complaints') }}"
+               class="sidebar-link active">
+                <span>▤</span>
+                My Complaints
+            </a>
+
+            <a href="/citizen/profile"
+               class="sidebar-link">
+                <span>◯</span>
+                Profile
+            </a>
+
+            <a href="{{ url_for('citizen_help') }}"
+               class="sidebar-link">
+                <span>?</span>
+                Help & Support
+            </a>
+
+            <a href="{{ url_for('logout') }}"
+               class="sidebar-link logout-link">
+                <span>↪</span>
+                Logout
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="citizen-main">
+
+        <!-- HEADER -->
+        <div class="page-header">
+
+            <div>
+                <p class="page-label">CITIZEN PORTAL</p>
+
+                <h1>Edit Complaint #{{ complaint.ComplaintID }}</h1>
+
+                <p class="page-description">
+                    Correct the details of your pending complaint.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="edit-flash {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+        <!-- EDIT FORM -->
+        <div class="edit-complaint-card">
+
+            <h2>Complaint Information</h2>
+
+            <p class="edit-intro">
+                Review your information and make the necessary corrections.
+                Your complaint ID will remain unchanged.
+            </p>
+
+            <div class="edit-notice">
+                <strong>Important:</strong>
+                Only pending complaints can be edited. Your existing
+                complaint image will be retained unless you upload a
+                replacement.
+            </div>
+
+            <form
+                method="POST"
+                action="{{ url_for('edit_complaint', complaint_id=complaint.ComplaintID) }}"
+                enctype="multipart/form-data">
+
+
+                <!-- CATEGORY -->
+                <div class="form-group">
+
+                    <label for="category">
+                        Category <span>*</span>
+                    </label>
+
+                    <select id="category" name="category" required>
+
+                        <option value="">
+                            Select an issue category
+                        </option>
+
+                        {% for category in categories %}
+                            <option
+                                value="{{ category.CategoryID }}"
+                                {% if category.CategoryID == complaint.CategoryID %}
+                                    selected
+                                {% endif %}>
+                                {{ category.CategoryName }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+                <div class="form-group">
+
+                    <label for="description">
+                        Description <span>*</span>
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="5"
+                        maxlength="5000"
+                        placeholder="Describe the issue clearly..."
+                        required>{{ complaint.Description }}</textarea>
+
+                </div>
+
+
+                <!-- AREA -->
+                <div class="form-group">
+
+                    <label for="area">
+                        Pune Area <span>*</span>
+                    </label>
+
+                    <select id="area" name="area" required>
+
+                        <option value="">Select Pune area</option>
+
+                        {% for area in pune_areas %}
+                            <option
+                                value="{{ area }}"
+                                {% if area == saved_area %}selected{% endif %}>
+                                {{ area }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- SPECIFIC LOCATION -->
+                <div class="form-group">
+
+                    <label for="specific_location">
+                        Specific Location / Landmark <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="specific_location"
+                        name="specific_location"
+                        value="{{ saved_specific_location }}"
+                        maxlength="255"
+                        placeholder="e.g. Near Kothrud Depot, Paud Road"
+                        required>
+
+                </div>
+
+
+                <!-- PRIORITY -->
+                <div class="form-group">
+
+                    <label for="priority">
+                        Priority <span>*</span>
+                    </label>
+
+                    <select id="priority" name="priority" required>
+
+                        <option value="Low"
+                            {% if complaint.Priority == "Low" %}selected{% endif %}>
+                            Low
+                        </option>
+
+                        <option value="Medium"
+                            {% if complaint.Priority == "Medium" %}selected{% endif %}>
+                            Medium
+                        </option>
+
+                        <option value="High"
+                            {% if complaint.Priority == "High" %}selected{% endif %}>
+                            High
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CURRENT IMAGE -->
+                <div class="form-group">
+
+                    <label>Current Complaint Image</label>
+
+                    {% if complaint.ImagePath %}
+
+                        <div class="current-image">
+
+                            <img
+                                src="{{ url_for('static', filename=complaint.ImagePath) }}"
+                                alt="Current complaint image">
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="form-help">
+                            No image was uploaded for this complaint.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- REPLACEMENT IMAGE -->
+                <div class="form-group">
+
+                    <label for="image">
+                        Replace Image
+                        <small>(Optional)</small>
+                    </label>
+
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+
+                    <p class="form-help">
+                        Supported formats: JPG, JPEG and PNG.
+                        Leave this empty to keep your current image.
+                    </p>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+                <div class="edit-form-actions">
+
+                    <a
+                        href="{{ url_for('my_complaints') }}"
+                        class="cancel-edit-btn">
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="save-edit-btn">
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

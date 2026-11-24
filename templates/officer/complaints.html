@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Complaints - CivicPulse</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/officer.css') }}">
+
+    <style>
+        :root {
+            --navy: #172B4D;
+            --blue: #4169A1;
+            --blue-light: #EAF2FF;
+            --teal: #2A9D9F;
+            --background: #F4F7FB;
+            --border: #E1E8F0;
+            --text: #334155;
+            --muted: #718096;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .officer-main {
+            min-width: 0;
+            padding: 22px 28px;
+        }
+
+        /* PAGE HEADER */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 25px;
+            font-weight: 750;
+        }
+
+        .page-header p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .complaint-count {
+            flex-shrink: 0;
+            padding: 9px 13px;
+            border: 1px solid #D9E5F5;
+            border-radius: 9px;
+            background: #FFFFFF;
+            color: var(--navy);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .sidebar-toggle {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #FFFFFF;
+            color: var(--navy);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--blue-light);
+        }
+
+        /* FILTER CARD */
+
+        .filter-card,
+        .recent-card {
+            background: #FFFFFF;
+            border: 1px solid #E9EEF5;
+            border-radius: 13px;
+            box-shadow: 0 3px 12px rgba(23, 43, 77, 0.035);
+        }
+
+        .filter-card {
+            padding: 17px 19px;
+            margin-bottom: 18px;
+        }
+
+        .filter-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .filter-heading h2,
+        .recent-card h2 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+        .filter-heading p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* QUICK DATES */
+
+        .quick-date-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+            margin: 0 0 15px;
+        }
+
+        .quick-date {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 33px;
+            padding: 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: #FFFFFF;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .quick-date:hover,
+        .quick-date.active {
+            background: var(--blue-light);
+            border-color: #A8C5F0;
+            color: var(--blue);
+        }
+
+        /* MAIN FILTER ROW */
+
+        .primary-filters {
+            display: grid;
+            grid-template-columns: minmax(150px, 1fr)
+                                   minmax(150px, 1fr)
+                                   minmax(230px, 1.5fr)
+                                   auto;
+            align-items: end;
+            gap: 11px;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .filter-field label {
+            color: #475569;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .filter-field input,
+        .filter-field select {
+            width: 100%;
+            min-width: 0;
+            height: 37px;
+            padding: 8px 10px;
+            border: 1px solid #D8E1ED;
+            border-radius: 7px;
+            outline: none;
+            background: #FFFFFF;
+            color: var(--navy);
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .filter-field input:focus,
+        .filter-field select:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(65, 105, 161, 0.1);
+        }
+
+        .search-wrapper {
+            display: flex;
+            gap: 7px;
+        }
+
+        .search-wrapper input {
+            flex: 1;
+        }
+
+        .search-button,
+        .filter-button,
+        .reset-button,
+        .more-filters-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            min-height: 37px;
+            padding: 8px 12px;
+            border-radius: 7px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .search-button,
+        .filter-button {
+            border: 1px solid var(--blue);
+            background: var(--blue);
+            color: #FFFFFF;
+        }
+
+        .search-button:hover,
+        .filter-button:hover {
+            background: #345887;
+        }
+
+        .more-filters-button,
+        .reset-button {
+            border: 1px solid #D8E1ED;
+            background: #F8FAFC;
+            color: var(--navy);
+        }
+
+        .more-filters-button:hover,
+        .reset-button:hover {
+            background: var(--blue-light);
+            border-color: #C4D7F2;
+        }
+
+        .more-filters-button {
+            width: 100%;
+        }
+
+        /* ADVANCED FILTERS */
+
+        .advanced-filters {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #E8EDF4;
+        }
+
+        .advanced-filters[hidden] {
+            display: none !important;
+        }
+
+        .advanced-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(130px, 1fr));
+            gap: 12px;
+        }
+
+        .advanced-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .filter-result {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* COMPLAINT TABLE */
+
+        .recent-card {
+            overflow: hidden;
+        }
+
+        .table-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 18px;
+            border-bottom: 1px solid #E8EDF4;
+        }
+
+        .table-heading span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .recent-table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+            background: #FFFFFF;
+        }
+
+        .recent-table th {
+            padding: 12px 13px;
+            background: #F7F9FC;
+            color: #64748B;
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: 0.35px;
+            text-align: left;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .recent-table td {
+            padding: 12px 13px;
+            border-top: 1px solid #EDF1F6;
+            color: #334155;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .recent-table tbody tr:hover {
+            background: #FAFCFF;
+        }
+
+        .recent-table td:nth-child(1) {
+            color: var(--blue);
+            font-weight: 750;
+        }
+
+        .recent-table td:nth-child(4) {
+            max-width: 200px;
+            overflow-wrap: anywhere;
+        }
+
+        .priority-badge,
+        .status-badge {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        .priority-high {
+            background: #FFF0F0;
+            color: #B54747;
+        }
+
+        .priority-medium {
+            background: #FFF5E5;
+            color: #A66B12;
+        }
+
+        .priority-low {
+            background: #E8F7F3;
+            color: #238477;
+        }
+
+        .status-pending {
+            background: #FFF5E5;
+            color: #A66B12;
+        }
+
+        .status-progress {
+            background: #F0EBFF;
+            color: #7055B4;
+        }
+
+        .status-resolved {
+            background: #E8F7F3;
+            color: #238477;
+        }
+
+        .status-select {
+            max-width: 120px;
+            height: 32px;
+            padding: 5px 7px;
+            border: 1px solid #D8E1ED;
+            border-radius: 6px;
+            background: #FFFFFF;
+            color: var(--navy);
+            font-size: 11px;
+        }
+
+        .update-button,
+        .back-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 30px;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            background: var(--blue);
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .update-button:hover,
+        .back-button:hover {
+            background: #345887;
+        }
+
+        .no-results {
+            padding: 35px 15px !important;
+            color: var(--muted) !important;
+            text-align: center;
+        }
+
+        /* COLLAPSED SIDEBAR */
+
+        .officer-layout.sidebar-collapsed .officer-sidebar {
+            width: 76px;
+            min-width: 76px;
+        }
+
+        .officer-layout.sidebar-collapsed .officer-sidebar .logo img {
+            max-width: 42px;
+        }
+
+        .officer-layout.sidebar-collapsed .officer-sidebar nav a {
+            overflow: hidden;
+            font-size: 0;
+            text-align: center;
+        }
+
+        .officer-layout.sidebar-collapsed .officer-sidebar nav a::first-letter {
+            font-size: 16px;
+        }
+
+        .officer-layout.sidebar-collapsed .officer-main {
+            min-width: 0;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1150px) {
+            .primary-filters {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .advanced-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .officer-main {
+                padding: 16px 12px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+            }
+
+            .page-header h1 {
+                font-size: 21px;
+            }
+
+            .page-header p {
+                max-width: 260px;
+                line-height: 1.5;
+            }
+
+            .complaint-count {
+                padding: 7px 9px;
+                font-size: 11px;
+            }
+
+            .filter-card {
+                padding: 14px;
+            }
+
+            .primary-filters,
+            .advanced-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-result {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .quick-date-row {
+                gap: 6px;
+            }
+
+            .quick-date {
+                padding: 7px 9px;
+                font-size: 11px;
+            }
+
+            .table-heading {
+                padding: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="officer-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="officer-sidebar">
+        <div class="logo">
+            <img
+                src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                alt="CivicPulse">
+        </div>
+
+        <nav>
+            <a href="{{ url_for('officer_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('officer_complaints') }}" class="active">Complaints</a>
+            <a href="{{ url_for('officer_profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="officer-main">
+
+        <!-- HEADER -->
+        <header class="page-header">
+
+            <div class="header-left">
+                <button
+                    type="button"
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Toggle sidebar"
+                    title="Collapse or expand sidebar">
+                    ☰
+                </button>
+
+                <div>
+                    <h1>Complaints</h1>
+                    <p>Manage and track civic complaints across Pune.</p>
+                </div>
+            </div>
+
+            <div class="complaint-count">
+                {{ complaints|length }} Complaints
+            </div>
+
+        </header>
+
+        <!-- FILTER SECTION -->
+        <section class="filter-card">
+
+            <div class="filter-heading">
+                <div>
+                    <h2>Find Complaints</h2>
+                    <p>Use quick filters or refine your results.</p>
+                </div>
+            </div>
+
+            <form
+                method="GET"
+                action="{{ url_for('officer_complaints') }}"
+                id="complaintFilterForm">
+
+                <!-- QUICK DATE FILTERS -->
+                <div class="quick-date-row" aria-label="Quick date filters">
+
+                    <button
+                        type="button"
+                        class="quick-date"
+                        data-range="today">
+                        Today
+                    </button>
+
+                    <button
+                        type="button"
+                        class="quick-date"
+                        data-range="last7">
+                        Last 7 Days
+                    </button>
+
+                    <button
+                        type="button"
+                        class="quick-date"
+                        data-range="last30">
+                        Last 30 Days
+                    </button>
+
+                    <button
+                        type="button"
+                        class="quick-date"
+                        data-range="this_month">
+                        This Month
+                    </button>
+
+                </div>
+
+                <!-- ALWAYS-VISIBLE FILTERS -->
+                <div class="primary-filters">
+
+                    <div class="filter-field">
+                        <label for="date_range">Date Range</label>
+
+                        <select id="date_range" name="date_range">
+                            <option value="all"
+                                {% if filters.date_range == 'all' %}selected{% endif %}>
+                                All Time
+                            </option>
+
+                            <option value="today"
+                                {% if filters.date_range == 'today' %}selected{% endif %}>
+                                Today
+                            </option>
+
+                            <option value="last7"
+                                {% if filters.date_range == 'last7' %}selected{% endif %}>
+                                Last 7 Days
+                            </option>
+
+                            <option value="last30"
+                                {% if filters.date_range == 'last30' %}selected{% endif %}>
+                                Last 30 Days
+                            </option>
+
+                            <option value="this_month"
+                                {% if filters.date_range == 'this_month' %}selected{% endif %}>
+                                This Month
+                            </option>
+
+                            <option value="custom"
+                                {% if filters.date_range == 'custom' %}selected{% endif %}>
+                                Custom Range
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="category_id">Category</label>
+
+                        <select id="category_id" name="category_id">
+                            <option value="">All Categories</option>
+
+                            {% for category in categories %}
+                            <option
+                                value="{{ category.CategoryID }}"
+                                {% if filters.category_id == (category.CategoryID|string) %}selected{% endif %}>
+                                {{ category.CategoryName }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="area">Area</label>
+
+                        <select id="area" name="area">
+                            <option value="">All Pune Areas</option>
+
+                            {% for item in pune_areas %}
+                            <option
+                                value="{{ item }}"
+                                {% if filters.area == item %}selected{% endif %}>
+                                {{ item }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="search">Search</label>
+
+                        <div class="search-wrapper">
+                            <input
+                                type="search"
+                                id="search"
+                                name="search"
+                                value="{{ filters.search }}"
+                                placeholder="Name, ID, location...">
+
+                            <button
+                                type="submit"
+                                class="search-button"
+                                title="Search complaints">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- MORE FILTERS BUTTON -->
+                <div style="margin-top: 12px;">
+                    <button
+                        type="button"
+                        class="more-filters-button"
+                        id="toggleFilters"
+                        aria-expanded="false"
+                        aria-controls="advancedFilters">
+
+                        <span id="filterButtonText">More Filters</span>
+                        <span id="filterArrow">⌄</span>
+                    </button>
+                </div>
+
+                <!-- ADVANCED FILTERS -->
+                <div
+                    class="advanced-filters"
+                    id="advancedFilters"
+                    hidden>
+
+                    <div class="advanced-grid">
+
+                        <div class="filter-field">
+                            <label for="complaint_id">Exact Complaint ID</label>
+
+                            <input
+                                type="number"
+                                min="1"
+                                id="complaint_id"
+                                name="complaint_id"
+                                value="{{ filters.complaint_id }}"
+                                placeholder="Enter complaint ID">
+                        </div>
+
+                        <div class="filter-field">
+                            <label for="citizen_id">Citizen</label>
+
+                            <select id="citizen_id" name="citizen_id">
+                                <option value="">All Citizens</option>
+
+                                {% for citizen in citizens %}
+                                <option
+                                    value="{{ citizen.UserID }}"
+                                    {% if filters.citizen_id == (citizen.UserID|string) %}selected{% endif %}>
+                                    {{ citizen.FullName }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="filter-field">
+                            <label for="status">Status</label>
+
+                            <select id="status" name="status">
+                                <option value="all"
+                                    {% if filters.status == 'all' %}selected{% endif %}>
+                                    All Statuses
+                                </option>
+
+                                <option value="Pending"
+                                    {% if filters.status == 'Pending' %}selected{% endif %}>
+                                    Pending
+                                </option>
+
+                                <option value="In Progress"
+                                    {% if filters.status == 'In Progress' %}selected{% endif %}>
+                                    In Progress
+                                </option>
+
+                                <option value="Resolved"
+                                    {% if filters.status == 'Resolved' %}selected{% endif %}>
+                                    Resolved
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="filter-field">
+                            <label for="priority">Priority</label>
+
+                            <select id="priority" name="priority">
+                                <option value="all"
+                                    {% if filters.priority == 'all' %}selected{% endif %}>
+                                    All Priorities
+                                </option>
+
+                                <option value="High"
+                                    {% if filters.priority == 'High' %}selected{% endif %}>
+                                    High
+                                </option>
+
+                                <option value="Medium"
+                                    {% if filters.priority == 'Medium' %}selected{% endif %}>
+                                    Medium
+                                </option>
+
+                                <option value="Low"
+                                    {% if filters.priority == 'Low' %}selected{% endif %}>
+                                    Low
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="filter-field">
+                            <label for="sort">Sort By</label>
+
+                            <select id="sort" name="sort">
+                                <option value="newest"
+                                    {% if filters.sort == 'newest' %}selected{% endif %}>
+                                    Newest First
+                                </option>
+
+                                <option value="oldest"
+                                    {% if filters.sort == 'oldest' %}selected{% endif %}>
+                                    Oldest First
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="filter-field">
+                            <label for="start_date">From Date</label>
+
+                            <input
+                                type="date"
+                                id="start_date"
+                                name="start_date"
+                                value="{{ filters.start_date }}">
+                        </div>
+
+                        <div class="filter-field">
+                            <label for="end_date">To Date</label>
+
+                            <input
+                                type="date"
+                                id="end_date"
+                                name="end_date"
+                                value="{{ filters.end_date }}">
+                        </div>
+
+                    </div>
+
+                    <div class="advanced-actions">
+
+                        <button
+                            type="submit"
+                            class="filter-button">
+                            Apply Filters
+                        </button>
+
+                        <a
+                            href="{{ url_for('officer_complaints') }}"
+                            class="reset-button">
+                            Reset Filters
+                        </a>
+
+                        <span class="filter-result">
+                            Showing {{ complaints|length }} matching complaint(s)
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- COMPLAINTS TABLE -->
+        <section class="recent-card">
+
+            <div class="table-heading">
+                <h2>All Complaints</h2>
+
+                <span>
+                    {{ complaints|length }} result(s)
+                </span>
+            </div>
+
+            <div class="table-scroll">
+
+                <table class="recent-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Citizen</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                            <th>View</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for complaint in complaints %}
+
+                        <tr>
+
+                            <td>#{{ complaint.ComplaintID }}</td>
+
+                            <td>{{ complaint.FullName }}</td>
+
+                            <td>{{ complaint.CategoryName }}</td>
+
+                            <td>{{ complaint.Location }}</td>
+
+                            <td>
+                                <span class="priority-badge
+                                    {% if complaint.Priority == 'High' %}
+                                        priority-high
+                                    {% elif complaint.Priority == 'Medium' %}
+                                        priority-medium
+                                    {% else %}
+                                        priority-low
+                                    {% endif %}">
+                                    {{ complaint.Priority }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status-badge
+                                    {% if complaint.Status == 'Pending' %}
+                                        status-pending
+                                    {% elif complaint.Status == 'In Progress' %}
+                                        status-progress
+                                    {% else %}
+                                        status-resolved
+                                    {% endif %}">
+                                    {{ complaint.Status }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ complaint.CreatedAt.strftime('%d-%m-%Y') if complaint.CreatedAt else '—' }}
+                            </td>
+
+                            <td>
+                                <form
+                                    action="{{ url_for('update_complaint_status', complaint_id=complaint.ComplaintID) }}"
+                                    method="POST"
+                                    style="display:flex;gap:6px;align-items:center;">
+
+                                    <select
+                                        name="status"
+                                        class="status-select"
+                                        aria-label="Update status for complaint {{ complaint.ComplaintID }}">
+
+                                        <option
+                                            value="Pending"
+                                            {% if complaint.Status == 'Pending' %}selected{% endif %}>
+                                            Pending
+                                        </option>
+
+                                        <option
+                                            value="In Progress"
+                                            {% if complaint.Status == 'In Progress' %}selected{% endif %}>
+                                            In Progress
+                                        </option>
+
+                                        <option
+                                            value="Resolved"
+                                            {% if complaint.Status == 'Resolved' %}selected{% endif %}>
+                                            Resolved
+                                        </option>
+
+                                    </select>
+
+                                    <button type="submit" class="update-button">
+                                        Update
+                                    </button>
+
+                                </form>
+                            </td>
+
+                            <td>
+                                <a
+                                    href="{{ url_for('officer_complaint_details', complaint_id=complaint.ComplaintID) }}"
+                                    class="back-button">
+                                    View
+                                </a>
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="9" class="no-results">
+                                No complaints match these filters.
+                                Try changing your filters or resetting them.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    // Toggle advanced filters.
+    const toggleFilters = document.getElementById("toggleFilters");
+    const advancedFilters = document.getElementById("advancedFilters");
+    const filterButtonText = document.getElementById("filterButtonText");
+    const filterArrow = document.getElementById("filterArrow");
+
+    toggleFilters.addEventListener("click", function () {
+        const shouldOpen = advancedFilters.hidden;
+
+        advancedFilters.hidden = !shouldOpen;
+
+        toggleFilters.setAttribute(
+            "aria-expanded",
+            String(shouldOpen)
+        );
+
+        filterButtonText.textContent =
+            shouldOpen ? "Less Filters" : "More Filters";
+
+        filterArrow.textContent =
+            shouldOpen ? "⌃" : "⌄";
+    });
+
+    // Quick date filters submit the selected date preset.
+    const dateRangeSelect = document.getElementById("date_range");
+    const startDateInput = document.getElementById("start_date");
+    const endDateInput = document.getElementById("end_date");
+    const filterForm = document.getElementById("complaintFilterForm");
+
+    document.querySelectorAll("[data-range]").forEach(button => {
+        button.addEventListener("click", function () {
+            dateRangeSelect.value = button.dataset.range;
+
+            startDateInput.value = "";
+            endDateInput.value = "";
+
+            filterForm.requestSubmit();
+        });
+    });
+
+    // Validate custom date ranges.
+    filterForm.addEventListener("submit", function (event) {
+        if (dateRangeSelect.value === "custom") {
+            if (!startDateInput.value || !endDateInput.value) {
+                event.preventDefault();
+
+                advancedFilters.hidden = false;
+                toggleFilters.setAttribute("aria-expanded", "true");
+                filterButtonText.textContent = "Less Filters";
+                filterArrow.textContent = "⌃";
+
+                alert("Please select both From Date and To Date.");
+                return;
+            }
+
+            if (startDateInput.value > endDateInput.value) {
+                event.preventDefault();
+
+                advancedFilters.hidden = false;
+                toggleFilters.setAttribute("aria-expanded", "true");
+                filterButtonText.textContent = "Less Filters";
+                filterArrow.textContent = "⌃";
+
+                alert("From Date must be on or before To Date.");
+            }
+        }
+    });
+
+    // Keep quick-date buttons visually active for the selected preset.
+    function updateActiveDateButton() {
+        document.querySelectorAll("[data-range]").forEach(button => {
+            button.classList.toggle(
+                "active",
+                button.dataset.range === dateRangeSelect.value
+            );
+        });
+    }
+
+    updateActiveDateButton();
+
+    // Automatically reveal advanced filters when they contain selections.
+    const hasAdvancedFilters =
+        document.getElementById("complaint_id").value !== "" ||
+        document.getElementById("citizen_id").value !== "" ||
+        document.getElementById("status").value !== "all" ||
+        document.getElementById("priority").value !== "all" ||
+        document.getElementById("sort").value === "oldest" ||
+        startDateInput.value !== "" ||
+        endDateInput.value !== "";
+
+    if (hasAdvancedFilters) {
+        advancedFilters.hidden = false;
+        toggleFilters.setAttribute("aria-expanded", "true");
+        filterButtonText.textContent = "Less Filters";
+        filterArrow.textContent = "⌃";
+    }
+
+    // Sidebar toggle: remembers the collapsed state on this browser.
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const officerLayout = document.querySelector(".officer-layout");
+
+    if (localStorage.getItem("civicpulseSidebarCollapsed") === "true") {
+        officerLayout.classList.add("sidebar-collapsed");
+    }
+
+    sidebarToggle.addEventListener("click", function () {
+        officerLayout.classList.toggle("sidebar-collapsed");
+
+        localStorage.setItem(
+            "civicpulseSidebarCollapsed",
+            officerLayout.classList.contains("sidebar-collapsed")
+        );
+    });
+</script>
+
+</body>
+</html>

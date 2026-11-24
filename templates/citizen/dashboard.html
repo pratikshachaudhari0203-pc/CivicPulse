@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Citizen Dashboard | CivicPulse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/citizen.css') }}">
+</head>
+
+<body class="citizen-page">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                     alt="CivicPulse">
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="/citizen/dashboard" class="sidebar-link active">
+                <span>▣</span>
+                Dashboard
+            </a>
+
+            <a href="/citizen/report" class="sidebar-link">
+                <span>＋</span>
+                Report an Issue
+            </a>
+
+            <a href="/citizen/complaints" class="sidebar-link">
+                <span>▤</span>
+                My Complaints
+            </a>
+
+            <a href="/citizen/profile" class="sidebar-link">
+                <span>◯</span>
+                Profile
+            </a>
+
+            <a href="/citizen/help" class="sidebar-link">
+                <span>?</span>
+                Help & Support
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="/logout" class="sidebar-link logout-link">
+                <span>↪</span>
+                Logout
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="dashboard-main">
+
+        <!-- TOP BAR -->
+
+        <header class="dashboard-header">
+
+            <div>
+                <p class="dashboard-label">CITIZEN PORTAL</p>
+
+                <h1>
+                    Welcome, {{ session["full_name"] }} 👋
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Track your civic complaints and help make your community better.
+                </p>
+            </div>
+
+            <div class="header-profile">
+                <div class="profile-avatar">
+                    {{ session["full_name"][0]|upper }}
+                </div>
+
+                <div>
+                    <strong>{{ session["full_name"] }}</strong>
+                    <small>Citizen</small>
+                </div>
+            </div>
+
+        </header>
+
+
+        <!-- ================= SUMMARY CARDS ================= -->
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon total">
+                    📋
+                </div>
+
+                <div>
+                    <p>Total Complaints</p>
+                    <h2>{{ total_complaints }}</h2>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon pending">
+                    ⏳
+                </div>
+
+                <div>
+                    <p>Pending</p>
+                    <h2>{{ pending_complaints }}</h2>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon progress">
+                    🔄
+                </div>
+
+                <div>
+                    <p>In Progress</p>
+                    <h2>{{ in_progress_complaints }}</h2>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon resolved">
+                    ✓
+                </div>
+
+                <div>
+                    <p>Resolved</p>
+                    <h2>{{ resolved_complaints }}</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= QUICK ACTION ================= -->
+
+        <section class="dashboard-action">
+
+            <div>
+                <h2>Have a civic issue?</h2>
+
+                <p>
+                    Report problems in your area and help improve your community.
+                </p>
+            </div>
+
+            <a href="/citizen/report" class="dashboard-action-btn">
+                ＋ Report an Issue
+            </a>
+
+        </section>
+
+
+        <!-- ================= RECENT COMPLAINTS ================= -->
+
+        <section class="complaints-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Recent Complaints</h2>
+                    <p>Your latest submitted complaints</p>
+                </div>
+
+                <a href="/citizen/complaints" class="view-all">
+                    View All →
+                </a>
+
+            </div>
+
+
+            {% if recent_complaints %}
+
+            <div class="complaint-table-wrapper">
+
+                <table class="complaint-table">
+
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for complaint in recent_complaints %}
+
+                        <tr>
+
+                            <td>
+                                <strong>#{{ complaint[0] }}</strong>
+                            </td>
+
+                            <td>
+                                {{ complaint[1] }}
+                            </td>
+
+                            <td>
+                                {{ complaint[2] }}
+                            </td>
+
+                            <td>
+                                <span class="priority {{ complaint[3]|lower }}">
+                                    {{ complaint[3] }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status {{ complaint[4]|lower|replace(' ', '-') }}">
+                                    {{ complaint[4] }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ complaint[5].strftime('%d %b %Y') }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    📋
+                </div>
+
+                <h3>No complaints yet</h3>
+
+                <p>
+                    You haven't reported any civic issues.
+                </p>
+
+                <a href="/citizen/report" class="empty-btn">
+                    Report Your First Issue
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>

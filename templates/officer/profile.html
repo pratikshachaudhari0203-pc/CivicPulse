@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Officer Profile - CivicPulse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/officer.css') }}">
+</head>
+
+<body>
+
+<div class="officer-layout">
+
+    <!-- Sidebar -->
+    <aside class="officer-sidebar">
+
+        <div class="logo">
+            <img
+                src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                alt="CivicPulse">
+        </div>
+
+        <nav>
+            <a href="{{ url_for('officer_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('officer_complaints') }}">
+                Complaints
+            </a>
+
+            <a href="{{ url_for('officer_profile') }}"
+               class="active">
+                Profile
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+        </nav>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="officer-main">
+
+        <div class="page-header">
+            <div>
+                <h1>My Profile</h1>
+                <p>View your officer account information.</p>
+            </div>
+        </div>
+
+
+        <div class="profile-card">
+
+            <div class="profile-icon">
+                {{ officer.FullName[0] }}
+            </div>
+
+            <h2>{{ officer.FullName }}</h2>
+
+            <p class="profile-role">
+                {{ officer.Role }}
+            </p>
+
+
+            <div class="profile-details">
+
+                <div class="profile-item">
+                    <strong>Full Name</strong>
+                    <span>{{ officer.FullName }}</span>
+                </div>
+
+                <div class="profile-item">
+                    <strong>Email</strong>
+                    <span>{{ officer.Email }}</span>
+                </div>
+
+                <div class="profile-item">
+                    <strong>Phone</strong>
+                    <span>{{ officer.Phone }}</span>
+                </div>
+
+                <div class="profile-item">
+                    <strong>City</strong>
+                    <span>{{ officer.City }}</span>
+                </div>
+
+                <div class="profile-item">
+                    <strong>Role</strong>
+                    <span>{{ officer.Role }}</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

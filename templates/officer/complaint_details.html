@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Complaint Details - CivicPulse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/officer.css') }}">
+</head>
+
+<body>
+
+<div class="officer-layout">
+
+    <!-- Sidebar -->
+    <aside class="officer-sidebar">
+
+        <div class="logo">
+            <img
+                src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                alt="CivicPulse">
+        </div>
+
+        <nav>
+            <a href="{{ url_for('officer_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('officer_complaints') }}"
+               class="active">
+                Complaints
+            </a>
+
+            <a href="{{ url_for('officer_profile') }}">
+                Profile
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+        </nav>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="officer-main">
+
+        <div class="page-header">
+            <div>
+                <h1>Complaint Details</h1>
+                <p>View complete complaint information.</p>
+            </div>
+        </div>
+
+
+        <div class="details-card">
+
+            <h2>Complaint #{{ complaint.ComplaintID }}</h2>
+
+            <div class="details-grid">
+
+                <div>
+                    <strong>Citizen</strong>
+                    <p>{{ complaint.FullName }}</p>
+                </div>
+
+                <div>
+                    <strong>Email</strong>
+                    <p>{{ complaint.Email }}</p>
+                </div>
+
+                <div>
+                    <strong>Category</strong>
+                    <p>{{ complaint.CategoryName }}</p>
+                </div>
+
+                <div>
+                    <strong>Location</strong>
+                    <p>{{ complaint.Location }}</p>
+                </div>
+
+                <div>
+                    <strong>Priority</strong>
+                    <p>{{ complaint.Priority }}</p>
+                </div>
+
+                <div>
+                    <strong>Status</strong>
+                    <p>{{ complaint.Status }}</p>
+                </div>
+
+                <div>
+                    <strong>Submitted On</strong>
+                    <p>{{ complaint.CreatedAt.strftime('%d-%m-%Y') }}</p>
+                </div>
+
+                <div>
+                    <strong>Resolved On</strong>
+
+                    {% if complaint.ResolvedAt %}
+                        <p>{{ complaint.ResolvedAt.strftime('%d-%m-%Y') }}</p>
+                    {% else %}
+                        <p>Not resolved</p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="description-box">
+
+                <h3>Description</h3>
+
+                <p>{{ complaint.Description }}</p>
+
+            </div>
+
+
+            {% if complaint.ImagePath %}
+
+            <div class="complaint-image">
+
+                <h3>Complaint Image</h3>
+
+                <img
+                    src="{{ url_for('static', filename=complaint.ImagePath) }}"
+                    alt="Complaint Image">
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Update Complaint Status -->
+<div class="complaint-actions">
+
+    <h3>Update Complaint Status</h3>
+
+    <form
+        action="{{ url_for('update_complaint_status', complaint_id=complaint.ComplaintID) }}"
+        method="POST"
+        class="status-update-form">
+
+        <select name="status" required>
+
+            <option
+                value="Pending"
+                {% if complaint.Status == "Pending" %}selected{% endif %}>
+                Pending
+            </option>
+
+            <option
+                value="In Progress"
+                {% if complaint.Status == "In Progress" %}selected{% endif %}>
+                In Progress
+            </option>
+
+            <option
+                value="Resolved"
+                {% if complaint.Status == "Resolved" %}selected{% endif %}>
+                Resolved
+            </option>
+
+        </select>
+
+        <input type="hidden" name="return_to" value="details">
+
+        <button type="submit" class="update-status-button">
+            Update Status
+        </button>
+
+    </form>
+
+    <hr>
+
+    <!-- Delete Complaint -->
+    <div class="delete-complaint-section">
+
+        <div>
+            <h3>Delete Complaint</h3>
+            <p>
+                Permanently remove this complaint if it is invalid
+                or was submitted by mistake.
+            </p>
+        </div>
+
+        <form
+            action="{{ url_for('delete_complaint', complaint_id=complaint.ComplaintID) }}"
+            method="POST"
+            onsubmit="return confirmDeleteComplaint();">
+
+            <button type="submit" class="delete-complaint-button">
+                Delete Complaint
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Back Button -->
+<a
+    href="{{ url_for('officer_complaints') }}"
+    class="back-button">
+    ← Back to Complaints
+</a>
+
+<script>
+function confirmDeleteComplaint() {
+
+    return confirm(
+        "Are you sure you want to permanently delete Complaint #" +
+        {{ complaint.ComplaintID | tojson }} +
+        "?\n\nThis action cannot be undone."
+    );
+
+}
+</script>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

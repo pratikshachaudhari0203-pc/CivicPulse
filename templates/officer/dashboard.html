@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Officer Dashboard - CivicPulse</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/officer.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Main layout */
+        .officer-layout {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .officer-sidebar {
+            flex: 0 0 285px;
+            width: 285px;
+            min-width: 0;
+            overflow: hidden;
+            transition: width 0.3s ease, flex-basis 0.3s ease;
+        }
+
+        /* Main dashboard */
+        .officer-main.analytics-main {
+            flex: 1 1 0;
+            width: calc(100% - 285px);
+            min-width: 0;
+            min-height: 100vh;
+            background: #f4f7fb;
+            transition: width 0.3s ease, flex-basis 0.3s ease;
+        }
+
+        /* Full-width dashboard when sidebar is collapsed */
+        body.sidebar-collapsed .officer-sidebar {
+            flex-basis: 0;
+            width: 0;
+            min-width: 0;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            border: none;
+        }
+
+        body.sidebar-collapsed .officer-main.analytics-main {
+            flex: 1 1 100%;
+            width: 100%;
+        }
+
+        /* Dashboard container */
+        .analytics-wrap {
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            padding: 28px;
+        }
+
+        /* Header */
+        .analytics-header,
+        .analytics-panel {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 5px 22px rgba(18, 52, 90, 0.06);
+        }
+
+        .analytics-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sidebar-toggle {
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background: #edf4ff;
+            color: #172b4d;
+            border: none;
+            border-radius: 10px;
+            font-size: 26px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background: #dbeafe;
+        }
+
+        .dashboard-heading {
+            flex: 1 1 250px;
+            min-width: 0;
+        }
+
+        .analytics-header h1 {
+            margin: 0 0 6px;
+            color: #172b4d;
+            font-size: 30px;
+        }
+
+        .analytics-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .scope-pill {
+            background: #eaf7fb;
+            color: #087e9a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Summary cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 5px 22px rgba(18, 52, 90, 0.06);
+            border-top: 4px solid #1769e0;
+            min-width: 0;
+        }
+
+        .kpi-card.pending {
+            border-top-color: #f59e0b;
+        }
+
+        .kpi-card.progress {
+            border-top-color: #7c3aed;
+        }
+
+        .kpi-card.resolved {
+            border-top-color: #16a34a;
+        }
+
+        .kpi-label {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .kpi-value {
+            color: #172b4d;
+            font-size: 32px;
+            line-height: 1.1;
+            font-weight: 800;
+        }
+
+        .kpi-note {
+            margin-top: 8px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        /* Section headings */
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            color: #172b4d;
+            font-size: 22px;
+        }
+
+        .section-heading p {
+            margin: 5px 0 0;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        /* Smart analytics */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .insight-card {
+            border: 1px solid #e6edf5;
+            border-radius: 14px;
+            padding: 20px;
+            background: linear-gradient(145deg, #ffffff, #f9fbff);
+            min-width: 0;
+        }
+
+        .insight-top {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .insight-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #eaf2ff;
+            color: #1769e0;
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .insight-value {
+            font-size: 21px;
+            font-weight: 800;
+            color: #172b4d;
+            overflow-wrap: anywhere;
+        }
+
+        .insight-detail {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        /* Trend and resolution insights */
+        .trend-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 18px;
+            border-radius: 13px;
+            margin-top: 18px;
+            background: #f1f7ff;
+            border: 1px solid #dbeafe;
+            color: #23446c;
+        }
+
+        .trend-banner.up {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #9a3412;
+        }
+
+        .trend-banner.down {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #166534;
+        }
+
+        .trend-banner strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Charts */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card {
+            border: 1px solid #e8eef5;
+            border-radius: 14px;
+            padding: 20px;
+            min-width: 0;
+            background: #ffffff;
+        }
+
+        .chart-card h3 {
+            margin: 0 0 14px;
+            color: #253858;
+            font-size: 16px;
+        }
+
+        .chart-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .chart-empty {
+            min-height: 120px;
+            display: grid;
+            place-items: center;
+            color: #94a3b8;
+        }
+
+        /* Recent complaints table */
+        .recent-table-wrap {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .recent-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .recent-table th {
+            text-align: left;
+            background: #f6f8fc;
+            color: #64748b;
+            font-size: 12px;
+            padding: 14px 12px;
+            white-space: nowrap;
+        }
+
+        .recent-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf1f6;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .status-badge,
+        .priority-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .status-progress {
+            color: #5b21b6;
+            background: #ede9fe;
+        }
+
+        .status-resolved {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .priority-high {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .priority-medium {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .priority-low {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .view-link {
+            color: #1769e0;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Medium screens */
+        @media (max-width: 1100px) {
+            .kpi-grid,
+            .insight-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .analytics-wrap {
+                padding: 20px;
+            }
+        }
+
+        /* Mobile screens */
+        @media (max-width: 700px) {
+            .analytics-wrap {
+                padding: 12px;
+            }
+
+            .analytics-header,
+            .analytics-panel {
+                padding: 17px;
+            }
+
+            .kpi-grid,
+            .insight-grid,
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-header h1 {
+                font-size: 24px;
+            }
+
+            .scope-pill {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* CivicPulse dashboard refresh: midnight navy + steel blue */
+        :root {
+            --cp-navy: #101b35;
+            --cp-heading: #172641;
+            --cp-blue: #4169a1;
+            --cp-teal: #2a9d9f;
+            --cp-bg: #f3f6fc;
+            --cp-border: #e2e8f0;
+            --cp-muted: #718096;
+        }
+        body { background: var(--cp-bg); color: var(--cp-heading); }
+        .officer-sidebar {
+            background: var(--cp-navy);
+            flex-basis: 250px;
+            width: 250px;
+            padding: 22px 14px;
+            box-shadow: 4px 0 18px rgba(16, 27, 53, .08);
+        }
+        .officer-sidebar nav a {
+            display: block; padding: 12px 14px; margin: 5px 0;
+            border-radius: 9px; color: #c9d5e8; text-decoration: none;
+            transition: background .2s ease, color .2s ease;
+        }
+        .officer-sidebar nav a:hover,
+        .officer-sidebar nav a.active {
+            color: #fff; background: #2b426b;
+        }
+        .officer-main.analytics-main {
+            width: calc(100% - 250px);
+            background: var(--cp-bg);
+        }
+        .analytics-wrap { padding: 20px 24px 30px; }
+        .analytics-header, .analytics-panel {
+            border: 1px solid var(--cp-border);
+            border-radius: 14px;
+            padding: 19px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 16px rgba(23, 38, 65, .035);
+        }
+        .analytics-header { gap: 14px; }
+        .analytics-header h1 { color: var(--cp-heading); font-size: 25px; }
+        .analytics-header p, .section-heading p { color: var(--cp-muted); }
+        .scope-pill { background: #e8eff9; color: #345984; padding: 8px 11px; }
+        .sidebar-toggle { background: #e8eff9; color: #233f68; width: 40px; height: 40px; font-size: 22px; }
+        .sidebar-toggle:hover { background: #d8e4f5; }
+        .kpi-grid { gap: 13px; margin-bottom: 16px; }
+        .kpi-card {
+            padding: 15px 17px; border-radius: 12px;
+            border: 1px solid var(--cp-border); border-top: 3px solid var(--cp-blue);
+            box-shadow: 0 3px 12px rgba(23, 38, 65, .035);
+        }
+        .kpi-card.pending { border-top-color: #d99a35; }
+        .kpi-card.progress { border-top-color: #8273b8; }
+        .kpi-card.resolved { border-top-color: var(--cp-teal); }
+        .kpi-label { font-size: 11px; letter-spacing: .45px; margin-bottom: 8px; }
+        .kpi-value { font-size: 27px; color: var(--cp-heading); }
+        .kpi-note { margin-top: 5px; font-size: 11px; }
+        .section-heading { margin-bottom: 13px; }
+        .section-heading h2 { font-size: 18px; color: var(--cp-heading); }
+        .section-heading p { font-size: 12px; }
+        .insight-grid { gap: 11px; }
+        .insight-card {
+            padding: 13px 14px; border-radius: 11px;
+            border-color: var(--cp-border); background: #fbfcff;
+        }
+        .insight-top { margin-bottom: 10px; font-size: 11px; gap: 7px; }
+        .insight-icon { width: 29px; height: 29px; background: #e8eff9; color: var(--cp-blue); }
+        .insight-value { font-size: 17px; color: var(--cp-heading); }
+        .insight-detail { font-size: 11px; margin-top: 5px; }
+        .trend-banner { padding: 12px 14px; margin-top: 12px; border-radius: 10px; }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .chart-card {
+            position: relative; padding: 13px 13px 11px;
+            border: 1px solid var(--cp-border); border-radius: 12px;
+            background: #fff; min-width: 0;
+            box-shadow: 0 3px 12px rgba(23, 38, 65, .035);
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+        }
+        .chart-card:hover {
+            transform: translateY(-2px); border-color: #c5d5ea;
+            box-shadow: 0 7px 18px rgba(23, 38, 65, .08);
+        }
+        .chart-card h3 { font-size: 13px; margin: 0 0 7px; color: #263b5a; }
+        .chart-card img {
+            width: 100%; height: 190px; max-height: 190px;
+            object-fit: contain; display: block; cursor: zoom-in;
+        }
+        .chart-card::after {
+            content: "Click to expand"; display: block; text-align: right;
+            color: #8a98ad; font-size: 10px; margin-top: 4px;
+        }
+        .recent-table th { background: #f1f5fb; }
+        .view-link { color: var(--cp-blue); }
+        .recent-table-wrap { overflow-x: auto; }
+        .chart-modal {
+            position: fixed; inset: 0; z-index: 9999;
+            display: none; align-items: center; justify-content: center;
+            padding: 24px; background: rgba(9, 19, 39, .78);
+            backdrop-filter: blur(4px);
+        }
+        .chart-modal.open { display: flex; }
+        .chart-modal-dialog {
+            width: min(1100px, 96vw); max-height: 92vh; overflow: auto;
+            background: #fff; border-radius: 16px; padding: 20px;
+            box-shadow: 0 25px 80px rgba(0,0,0,.25);
+        }
+        .chart-modal-head {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 12px; margin-bottom: 14px;
+        }
+        .chart-modal-head h2 { margin: 0; color: var(--cp-heading); font-size: 19px; }
+        .chart-modal-close {
+            border: 0; border-radius: 9px; width: 38px; height: 38px;
+            background: #edf2f9; color: var(--cp-heading); font-size: 23px;
+            cursor: pointer;
+        }
+        .chart-modal-image { display: block; width: 100%; max-height: 75vh; object-fit: contain; }
+        @media (max-width: 1200px) {
+            .chart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .analytics-wrap { padding: 18px; }
+        }
+        @media (max-width: 700px) {
+            .officer-sidebar { flex-basis: 220px; width: 220px; }
+            .officer-main.analytics-main { width: calc(100% - 220px); }
+            .analytics-wrap { padding: 12px; }
+            .analytics-header, .analytics-panel { padding: 14px; }
+            .kpi-grid, .insight-grid, .chart-grid { grid-template-columns: 1fr; }
+            .chart-card img { height: 220px; max-height: 220px; }
+            .chart-modal { padding: 10px; }
+            .chart-modal-dialog { padding: 14px; }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="officer-layout">
+
+    <!-- Sidebar -->
+    <aside class="officer-sidebar">
+        <div class="logo">
+            <img
+                src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                alt="CivicPulse"
+            >
+        </div>
+
+        <nav>
+            <a href="{{ url_for('officer_dashboard') }}" class="active">Dashboard</a>
+            <a href="{{ url_for('officer_complaints') }}">Complaints</a>
+            <a href="{{ url_for('officer_profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main dashboard -->
+    <main class="officer-main analytics-main">
+
+        <div class="analytics-wrap">
+
+            <!-- Dashboard header -->
+            <header class="analytics-header">
+
+                <button
+                    id="sidebarToggle"
+                    class="sidebar-toggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                    aria-expanded="true"
+                >
+                    ☰
+                </button>
+
+                <div class="dashboard-heading">
+                    <h1>Officer Dashboard</h1>
+                    <p>Complaint overview, performance metrics, and data-driven insights.</p>
+                </div>
+
+                <div class="scope-pill">Pune-area civic complaints</div>
+
+            </header>
+
+            <!-- Summary cards -->
+            <section class="kpi-grid" aria-label="Complaint summary">
+
+                <article class="kpi-card">
+                    <div class="kpi-label">TOTAL COMPLAINTS</div>
+                    <div class="kpi-value">{{ total }}</div>
+                    <div class="kpi-note">All recorded complaints</div>
+                </article>
+
+                <article class="kpi-card pending">
+                    <div class="kpi-label">PENDING</div>
+                    <div class="kpi-value">{{ pending }}</div>
+                    <div class="kpi-note">Awaiting action</div>
+                </article>
+
+                <article class="kpi-card progress">
+                    <div class="kpi-label">IN PROGRESS</div>
+                    <div class="kpi-value">{{ in_progress }}</div>
+                    <div class="kpi-note">Currently being handled</div>
+                </article>
+
+                <article class="kpi-card resolved">
+                    <div class="kpi-label">RESOLVED</div>
+                    <div class="kpi-value">{{ resolved }}</div>
+                    <div class="kpi-note">Marked as resolved</div>
+                </article>
+
+            </section>
+
+            <!-- Smart Analytics and Insights -->
+            <section class="analytics-panel">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Smart Analytics &amp; Insights</h2>
+                        <p>Automatically generated from the current complaint records.</p>
+                    </div>
+                </div>
+
+                <div class="insight-grid">
+
+                    {% for insight in insights %}
+
+                    <article class="insight-card">
+
+                        <div class="insight-top">
+                            <span class="insight-icon">{{ insight.icon }}</span>
+                            <span>{{ insight.title }}</span>
+                        </div>
+
+                        <div class="insight-value">{{ insight.value }}</div>
+
+                        <div class="insight-detail">{{ insight.detail }}</div>
+
+                    </article>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="trend-banner {{ trend_direction }}">
+
+                    <span class="insight-icon">↗</span>
+
+                    <div>
+                        <strong>Complaint Trend · Last 7 Days</strong>
+
+                        {{ trend_message }}
+
+                        <div class="insight-detail">
+                            Current period: {{ recent_7 }} complaints
+                            · Previous period: {{ previous_7 }} complaints
+                        </div>
+                    </div>
+
+                </div>
+
+                <div
+                    class="trend-banner"
+                    style="margin-top: 10px; background:#f8fafc; border-color:#e2e8f0; color:#334155;"
+                >
+
+                    <span class="insight-icon">◷</span>
+
+                    <div>
+                        <strong>Average Resolution Time</strong>
+
+                        {% if avg_resolution_hours is not none %}
+
+                            {{ avg_resolution_hours }} hours among resolved complaints with valid timestamps.
+
+                        {% else %}
+
+                            Not enough resolved complaint timestamp data to calculate this metric yet.
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Complaint charts -->
+            <section class="analytics-panel">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Complaint Analytics</h2>
+                        
+                    </div>
+                </div>
+
+                <div class="chart-grid">
+
+                    <article class="chart-card">
+                        <h3>Complaints by Category</h3>
+                        <img
+                            src="{{ url_for('static', filename=category_chart) }}?v={{ total }}-{{ resolved }}-navy2"
+                            alt="Bar chart showing complaints by category"
+                        >
+                    </article>
+
+                    <article class="chart-card">
+                        <h3>Complaint Status</h3>
+                        <img
+                            src="{{ url_for('static', filename=status_chart) }}?v={{ total }}-{{ resolved }}-navy2"
+                            alt="Chart showing complaint status distribution"
+                        >
+                    </article>
+
+                    <article class="chart-card">
+                        <h3>Area-wise Complaints</h3>
+                        <img
+                            src="{{ url_for('static', filename=location_chart) }}?v={{ total }}-{{ resolved }}-navy2"
+                            alt="Bar chart showing top complaint areas"
+                        >
+                    </article>
+
+                    <article class="chart-card">
+                        <h3>Priority-wise Complaints</h3>
+                        <img
+                            src="{{ url_for('static', filename=priority_chart) }}?v={{ total }}-{{ pending }}-navy2"
+                            alt="Chart showing complaints by priority"
+                        >
+                    </article>
+
+                    <article class="chart-card">
+                        <h3>Complaint Trend</h3>
+                        <img
+                            src="{{ url_for('static', filename=trend_chart) }}?v={{ total }}-navy2"
+                            alt="Line chart showing complaints over time"
+                        >
+                    </article>
+
+                    <article class="chart-card">
+                        <h3>Resolution Analytics</h3>
+                        <img
+                            src="{{ url_for('static', filename=resolution_chart) }}?v={{ resolved }}-navy2"
+                            alt="Chart showing resolution analytics"
+                        >
+                    </article>
+
+                </div>
+
+            </section>
+
+            <!-- Recent complaints -->
+            <section class="analytics-panel">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h2>Recent Complaints</h2>
+                        <p>The five most recently submitted complaints.</p>
+                    </div>
+
+                    <a class="view-link" href="{{ url_for('officer_complaints') }}">
+                        View all complaints →
+                    </a>
+
+                </div>
+
+                <div class="recent-table-wrap">
+
+                    <table class="recent-table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Citizen</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for complaint in recent_complaints %}
+
+                            <tr>
+
+                                <td>#{{ complaint[0] }}</td>
+                                <td>{{ complaint[1] }}</td>
+                                <td>{{ complaint[2] }}</td>
+                                <td>{{ complaint[3] }}</td>
+
+                                <td>
+                                    <span class="priority-badge priority-{{ complaint[4]|lower }}">
+                                        {{ complaint[4] }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge {% if complaint[5] == 'Pending' %}status-pending{% elif complaint[5] == 'In Progress' %}status-progress{% else %}status-resolved{% endif %}">
+                                        {{ complaint[5] }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if complaint[6] %}
+                                        {{ complaint[6].strftime('%d-%m-%Y') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a
+                                        class="view-link"
+                                        href="{{ url_for('officer_complaint_details', complaint_id=complaint[0]) }}"
+                                    >
+                                        View
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                            {% else %}
+
+                            <tr>
+                                <td
+                                    colspan="8"
+                                    style="text-align:center; padding:28px; color:#94a3b8;"
+                                >
+                                    No complaints have been submitted yet.
+                                </td>
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<div class="chart-modal" id="chartModal" role="dialog" aria-modal="true" aria-labelledby="chartModalTitle">
+    <div class="chart-modal-dialog">
+        <div class="chart-modal-head">
+            <h2 id="chartModalTitle">Chart preview</h2>
+            <button type="button" class="chart-modal-close" id="chartModalClose" aria-label="Close chart preview">&times;</button>
+        </div>
+        <img class="chart-modal-image" id="chartModalImage" src="" alt="Expanded analytics chart">
+    </div>
+</div>
+
+<script>
+    const sidebarToggle = document.getElementById("sidebarToggle");
+
+    // Restore the sidebar state when revisiting the dashboard.
+    const savedSidebarState = sessionStorage.getItem("civicpulseSidebarCollapsed");
+
+    if (savedSidebarState === "true") {
+        document.body.classList.add("sidebar-collapsed");
+        sidebarToggle.setAttribute("aria-expanded", "false");
+    }
+
+    sidebarToggle.addEventListener("click", function () {
+
+        document.body.classList.toggle("sidebar-collapsed");
+
+        const isCollapsed =
+            document.body.classList.contains("sidebar-collapsed");
+
+        sidebarToggle.setAttribute(
+            "aria-expanded",
+            String(!isCollapsed)
+        );
+
+        sessionStorage.setItem(
+            "civicpulseSidebarCollapsed",
+            String(isCollapsed)
+        );
+
+    });
+
+    // Open any chart in a large preview with click or double-click.
+    const chartModal = document.getElementById("chartModal");
+    const chartModalImage = document.getElementById("chartModalImage");
+    const chartModalTitle = document.getElementById("chartModalTitle");
+    const chartModalClose = document.getElementById("chartModalClose");
+    let lastChartTrigger = null;
+
+    function openChartPreview(image) {
+        lastChartTrigger = image;
+        chartModalImage.src = image.src;
+        chartModalImage.alt = image.alt || "Expanded analytics chart";
+        const title = image.closest(".chart-card").querySelector("h3");
+        chartModalTitle.textContent = title ? title.textContent : "Chart preview";
+        chartModal.classList.add("open");
+        document.body.style.overflow = "hidden";
+        chartModalClose.focus();
+    }
+
+    function closeChartPreview() {
+        chartModal.classList.remove("open");
+        chartModalImage.src = "";
+        document.body.style.overflow = "";
+        if (lastChartTrigger) lastChartTrigger.focus();
+    }
+
+    document.querySelectorAll(".chart-card img").forEach(function (image) {
+        image.setAttribute("tabindex", "0");
+        image.setAttribute("role", "button");
+        image.setAttribute("aria-label", "Expand " +
+            (image.closest(".chart-card").querySelector("h3")?.textContent || "chart"));
+        image.addEventListener("click", function () { openChartPreview(image); });
+        image.addEventListener("dblclick", function () { openChartPreview(image); });
+        image.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openChartPreview(image);
+            }
+        });
+    });
+
+    chartModalClose.addEventListener("click", closeChartPreview);
+    chartModal.addEventListener("click", function (event) {
+        if (event.target === chartModal) closeChartPreview();
+    });
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && chartModal.classList.contains("open")) {
+            closeChartPreview();
+        }
+    });
+</script>
+
+</body>
+</html>

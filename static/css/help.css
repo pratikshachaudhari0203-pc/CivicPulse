@@ -1,0 +1,149 @@
+/* ================= HELP & SUPPORT ================= */
+
+.help-card {
+    background: #ffffff;
+    border: 1px solid #e3ebf0;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 14px rgba(20, 65, 100, 0.04);
+}
+
+.help-card h2 {
+    color: #19334f;
+    font-size: 18px;
+    margin: 0 0 22px;
+}
+
+
+/* ================= HOW IT WORKS ================= */
+
+.help-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.help-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #079fc1;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.help-step h3 {
+    color: #40546a;
+    font-size: 14px;
+    margin: 2px 0 5px;
+}
+
+.help-step p {
+    color: #718092;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+/* ================= STATUS GUIDE ================= */
+
+.status-guide {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.status-guide > div {
+    padding: 16px;
+    background: #f8fafb;
+    border-radius: 9px;
+}
+
+.status-guide p {
+    color: #718092;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 10px 0 0;
+}
+
+
+/* ================= FAQ ================= */
+
+.faq-item {
+    padding: 15px 0;
+    border-top: 1px solid #edf2f5;
+}
+
+.faq-item:first-child {
+    border-top: none;
+}
+
+.faq-item h3 {
+    color: #40546a;
+    font-size: 14px;
+    margin: 0 0 7px;
+}
+
+.faq-item p {
+    color: #718092;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+/* ================= SUPPORT ================= */
+
+.support-box {
+    background: #079fc1;
+    color: #ffffff;
+
+    border-radius: 14px;
+
+    padding: 25px;
+
+    margin-bottom: 20px;
+}
+
+.support-box h2 {
+    font-size: 18px;
+    margin: 0 0 8px;
+}
+
+.support-box p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 6px 0;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 700px) {
+
+    .status-guide {
+        grid-template-columns: 1fr;
+    }
+
+    .help-card {
+        padding: 20px;
+    }
+
+}

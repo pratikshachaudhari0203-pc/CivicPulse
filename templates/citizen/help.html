@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Help & Support - CivicPulse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/citizen.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/help.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="citizen-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+
+            <img src="{{ url_for('static', filename='images/CivicPulse_logo.png') }}"
+                 alt="CivicPulse">
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('citizen_dashboard') }}"
+               class="sidebar-link">
+
+                <span>⌂</span>
+                Dashboard
+
+            </a>
+
+
+            <a href="{{ url_for('report_issue') }}"
+               class="sidebar-link">
+
+                <span>＋</span>
+                Report an Issue
+
+            </a>
+
+
+            <a href="{{ url_for('my_complaints') }}"
+               class="sidebar-link">
+
+                <span>▤</span>
+                My Complaints
+
+            </a>
+
+
+            <a href="{{ url_for('citizen_profile') }}"
+               class="sidebar-link">
+
+                <span>◯</span>
+                Profile
+
+            </a>
+
+
+            <a href="{{ url_for('citizen_help') }}"
+               class="sidebar-link active">
+
+                <span>?</span>
+                Help & Support
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="sidebar-link logout-link">
+
+                <span>↪</span>
+                Logout
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="citizen-main">
+
+        <div class="page-header">
+
+            <div>
+
+                <p class="page-label">
+                    CITIZEN PORTAL
+                </p>
+
+                <h1>
+                    Help & Support
+                </h1>
+
+                <p class="page-description">
+                    Learn how to use CivicPulse and manage your complaints.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= HOW IT WORKS ================= -->
+
+        <div class="help-card">
+
+            <h2>
+                How CivicPulse Works
+            </h2>
+
+            <div class="help-steps">
+
+                <div class="help-step">
+
+                    <div class="step-number">
+                        1
+                    </div>
+
+                    <div>
+                        <h3>Report an Issue</h3>
+
+                        <p>
+                            Select a category, describe the civic problem,
+                            provide the location and submit your complaint.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="help-step">
+
+                    <div class="step-number">
+                        2
+                    </div>
+
+                    <div>
+                        <h3>Track Your Complaint</h3>
+
+                        <p>
+                            Open My Complaints and select View Details
+                            to check the current status of your complaint.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="help-step">
+
+                    <div class="step-number">
+                        3
+                    </div>
+
+                    <div>
+                        <h3>Issue Gets Resolved</h3>
+
+                        <p>
+                            The concerned officer handles the issue and
+                            updates the complaint status.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= STATUS GUIDE ================= -->
+
+        <div class="help-card">
+
+            <h2>
+                Complaint Status
+            </h2>
+
+            <div class="status-guide">
+
+                <div>
+                    <span class="status pending">
+                        Pending
+                    </span>
+
+                    <p>
+                        Your complaint has been submitted and is waiting
+                        to be reviewed.
+                    </p>
+                </div>
+
+
+                <div>
+                    <span class="status in-progress">
+                        In Progress
+                    </span>
+
+                    <p>
+                        Your complaint is currently being handled.
+                    </p>
+                </div>
+
+
+                <div>
+                    <span class="status resolved">
+                        Resolved
+                    </span>
+
+                    <p>
+                        The reported issue has been resolved.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= FAQ ================= -->
+
+        <div class="help-card">
+
+            <h2>
+                Frequently Asked Questions
+            </h2>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    How do I report a complaint?
+                </h3>
+
+                <p>
+                    Go to Report an Issue, select the appropriate category,
+                    enter the issue details and location, then submit the form.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    Where can I see my complaints?
+                </h3>
+
+                <p>
+                    Open My Complaints from the sidebar to view all complaints
+                    submitted from your account.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    How can I track my complaint?
+                </h3>
+
+                <p>
+                    Open My Complaints and click View Details on a complaint
+                    to see its current progress.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    What information should I provide?
+                </h3>
+
+                <p>
+                    Provide a clear description and accurate location of the
+                    civic issue. You can also attach an image if available.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= SUPPORT ================= -->
+
+        <div class="support-box">
+
+            <h2>
+                Need More Help?
+            </h2>
+
+            <p>
+                If you need assistance with CivicPulse, please contact
+                the concerned support team.
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                support@civicpulse.com
+            </p>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

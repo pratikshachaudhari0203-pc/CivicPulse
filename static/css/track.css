@@ -1,0 +1,212 @@
+/* ================= TRACK COMPLAINT ================= */
+
+.track-card {
+    background: #ffffff;
+    border: 1px solid #e3ebf0;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 4px 14px rgba(20, 65, 100, 0.04);
+}
+
+
+/* ================= HEADER ================= */
+
+.track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.track-header h2 {
+    color: #19334f;
+    font-size: 22px;
+    margin: 6px 0 0;
+}
+
+.complaint-id {
+    color: #079fc1;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ================= INFORMATION ================= */
+
+.track-info {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.track-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.track-info span,
+.track-description > span {
+    color: #8a98a6;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.track-info strong {
+    color: #40546a;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* ================= DESCRIPTION ================= */
+
+.track-description {
+    padding: 22px 0;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.track-description p {
+    color: #627386;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 8px 0 0;
+}
+
+
+/* ================= STATUS SECTION ================= */
+
+.status-section {
+    padding-top: 25px;
+}
+
+.status-section h3 {
+    color: #19334f;
+    font-size: 17px;
+    margin-bottom: 25px;
+}
+
+
+/* ================= TIMELINE ================= */
+
+.status-timeline {
+    margin-left: 10px;
+}
+
+.timeline-item {
+    position: relative;
+    display: flex;
+    gap: 15px;
+    min-height: 75px;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 30px;
+    width: 2px;
+    height: 55px;
+    background: #dbe5ea;
+}
+
+.timeline-item.completed:not(:last-child)::before {
+    background: #079fc1;
+}
+
+
+/* Timeline Dot */
+
+.timeline-dot {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #edf2f5;
+    color: #8a98a6;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-item.completed .timeline-dot {
+    background: #079fc1;
+    color: #ffffff;
+}
+
+
+/* Timeline Text */
+
+.timeline-content strong {
+    display: block;
+    color: #40546a;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.timeline-content p {
+    color: #8a98a6;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+
+/* ================= BACK BUTTON ================= */
+
+.back-btn {
+    display: inline-block;
+
+    margin-top: 15px;
+    padding: 10px 18px;
+
+    border: 1px solid #dbe5ea;
+    border-radius: 8px;
+
+    color: #526477;
+    background: #ffffff;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    border-color: #079fc1;
+    color: #079fc1;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 700px) {
+
+    .track-card {
+        padding: 20px;
+    }
+
+    .track-header {
+        flex-direction: column;
+    }
+
+    .track-info {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+}
